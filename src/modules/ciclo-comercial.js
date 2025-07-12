@@ -32,10 +32,28 @@ window.CRMCicloComercial = (() => {
     alertasDispparados: new Set(),
     ultimaAtualizacao: null
   };
-  
+
   // =====================================================
   // CÁLCULO DO CICLO COMERCIAL
   // =====================================================
+
+  /**
+   * Calcula a quantidade de dias restantes no ciclo comercial
+   * considerando o período fixo de 27 ao dia 26 do mês seguinte.
+   */
+  function calcularDiasRestantesCiclo() {
+    const hoje = new Date();
+    const diaInicio = 27;
+    const mesAtual = hoje.getDate() >= diaInicio ? hoje.getMonth() : hoje.getMonth() - 1;
+    const ano = hoje.getFullYear();
+
+    const inicioCiclo = new Date(ano, mesAtual, diaInicio);
+    const fimCiclo = new Date(inicioCiclo);
+    fimCiclo.setMonth(fimCiclo.getMonth() + 1);
+
+    const diff = Math.ceil((fimCiclo - hoje) / (1000 * 60 * 60 * 24));
+    return diff;
+  }
   
   /**
    * Calcula o ciclo comercial atual (27 do mês anterior ao 26 do mês atual)
@@ -68,11 +86,10 @@ window.CRMCicloComercial = (() => {
     const agora = new Date();
     const totalMilliseconds = fimCiclo.getTime() - inicioCiclo.getTime();
     const passadoMilliseconds = Math.max(0, agora.getTime() - inicioCiclo.getTime());
-    const restanteMilliseconds = Math.max(0, fimCiclo.getTime() - agora.getTime());
-    
+
     const totalDias = Math.ceil(totalMilliseconds / (1000 * 60 * 60 * 24));
     const diasPassados = Math.floor(passadoMilliseconds / (1000 * 60 * 60 * 24));
-    const diasRestantes = Math.ceil(restanteMilliseconds / (1000 * 60 * 60 * 24));
+    const diasRestantes = calcularDiasRestantesCiclo();
     
     const progresso = Math.min(100, Math.max(0, Math.round((diasPassados / totalDias) * 100)));
     
