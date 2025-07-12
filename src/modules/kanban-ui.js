@@ -831,11 +831,22 @@ window.CRMKanbanUI = (() => {
     });
 
     if (confirmar) {
+      let dataInformada = window.prompt('Informe a data da venda (YYYY-MM-DD)', new Date().toISOString().slice(0,10));
+      if (!dataInformada) {
+        window.CRMUI?.mostrarNotificacao('❌ Data não informada', 'warning');
+        return;
+      }
+      const dataVenda = new Date(dataInformada);
+      if (isNaN(dataVenda)) {
+        window.CRMUI?.mostrarNotificacao('❌ Data inválida', 'error');
+        return;
+      }
+      const ciclo = window.CRMCicloComercial?.calcularCicloComercial(new Date(dataInformada)) || {};
       // Marca todos os deals como fechados
       if (cliente.deals && cliente.deals.length > 0) {
         cliente.deals.forEach(deal => {
           deal.status = 'fechado';
-          deal.dataFechamento = new Date().toISOString();
+          deal.dataFechamento = dataVenda.toISOString();
         });
       } else {
         // Se não tem deals, cria um automaticamente
@@ -845,7 +856,8 @@ window.CRMKanbanUI = (() => {
           valor_gordurinha: 0,
           status: 'fechado',
           probabilidade: 100,
-          observacoes: 'Venda finalizada manualmente'
+          observacoes: 'Venda finalizada manualmente',
+          dataFechamento: dataVenda.toISOString()
         });
       }
 
@@ -862,13 +874,17 @@ window.CRMKanbanUI = (() => {
       }
 
       // Atualiza cliente
-      window.CRMKanbanCore.atualizarCliente(clientId, { vendaFinalizada: true });
+      window.CRMKanbanCore.atualizarCliente(clientId, {
+        vendaFinalizada: true,
+        dataVenda: dataVenda.toISOString(),
+        cicloComercial: ciclo.id
+      });
 
       // CORREÇÃO: ADICIONA ANIMAÇÃO DE CONFETE AQUI
       criarAnimacaoConfete();
 
       // Popup de sucesso
-      mostrarPopupSucesso();
+      mostrarPopupSucesso(dataVenda);
 
       // Renderiza novamente
       setTimeout(() => {
@@ -912,12 +928,13 @@ window.CRMKanbanUI = (() => {
     }, 3000);
   }
 
-  function mostrarPopupSucesso() {
+  function mostrarPopupSucesso(dataVenda) {
     const popup = document.createElement('div');
     popup.className = 'success-popup';
+    const dataStr = dataVenda ? new Date(dataVenda).toLocaleDateString('pt-BR') : '';
     popup.innerHTML = `
       <h3>🎉 Parabéns!</h3>
-      <p>Venda registrada com sucesso.</p>
+      <p>Venda registrada com sucesso${dataStr ? ` em ${dataStr}` : ''}.</p>
     `;
     
     document.body.appendChild(popup);
