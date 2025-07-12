@@ -823,25 +823,46 @@ window.CRMKanbanUI = (() => {
       return;
     }
 
-    const confirmar = await window.CRMUI?.confirmar({
-      titulo: '🎉 Finalizar Venda',
-      mensagem: `Confirma a finalização da venda para ${cliente.nome}?`,
-      textoBotaoConfirmar: 'Sim, Finalizar Venda',
-      tipo: 'success'
+    const confirmar = await new Promise((resolve) => {
+      const modal = window.CRMUI?.criarModal({
+        titulo: '🎉 Finalizar Venda',
+        conteudo: `
+          <div style="padding:16px;">
+            <p style="margin-bottom:12px;">Confirma a finalização da venda para <strong>${cliente.nome}</strong>?</p>
+            <input type="date" id="dataVendaInput" value="${new Date().toISOString().slice(0,10)}" style="width:100%; padding:8px; border:1px solid #d1d5db; border-radius:6px;">
+          </div>
+        `,
+        tamanho: 'small',
+        acoes: [
+          {
+            id: 'cancelar',
+            texto: 'Cancelar',
+            tipo: 'secondary',
+            onClick: function() { this.fechar(); resolve(false); }
+          },
+          {
+            id: 'confirmar',
+            texto: 'Sim, Finalizar Venda',
+            tipo: 'primary',
+            onClick: function() { this.fechar(); resolve(true); }
+          }
+        ],
+        onClose: () => resolve(false)
+      });
     });
 
     if (confirmar) {
-      let dataInformada = window.prompt('Informe a data da venda (YYYY-MM-DD)', new Date().toISOString().slice(0,10));
+      const dataInformada = document.getElementById('dataVendaInput')?.value;
+      const dataVenda = new Date(dataInformada);
       if (!dataInformada) {
         window.CRMUI?.mostrarNotificacao('❌ Data não informada', 'warning');
         return;
       }
-      const dataVenda = new Date(dataInformada);
       if (isNaN(dataVenda)) {
         window.CRMUI?.mostrarNotificacao('❌ Data inválida', 'error');
         return;
       }
-      const ciclo = window.CRMCicloComercial?.calcularCicloComercial(new Date(dataInformada)) || {};
+      const ciclo = window.CRMCicloComercial.calcularCicloComercial(dataVenda);
       // Marca todos os deals como fechados
       if (cliente.deals && cliente.deals.length > 0) {
         cliente.deals.forEach(deal => {
@@ -876,7 +897,7 @@ window.CRMKanbanUI = (() => {
       // Atualiza cliente
       window.CRMKanbanCore.atualizarCliente(clientId, {
         vendaFinalizada: true,
-        dataVenda: dataVenda.toISOString(),
+        dataVenda: dataInformada,
         cicloComercial: ciclo.id
       });
 
@@ -885,6 +906,11 @@ window.CRMKanbanUI = (() => {
 
       // Popup de sucesso
       mostrarPopupSucesso(dataVenda);
+
+      const animacao = document.createElement('div');
+      animacao.classList.add('confete-festa');
+      document.body.appendChild(animacao);
+      setTimeout(() => animacao.remove(), 2000);
 
       // Renderiza novamente
       setTimeout(() => {
