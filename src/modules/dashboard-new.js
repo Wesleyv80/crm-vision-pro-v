@@ -13,11 +13,11 @@ window.CRMDashboard = {
   // =====================================================
   // MOSTRAR DASHBOARD COMPLETO EM TELA CHEIA
   // =====================================================
-  mostrarDashboardCompleto: function() {
+  mostrarDashboardCompleto: async function() {
     const stats = this.calcularEstatisticas();
     const insights = this.gerarInsights(stats);
     const metrics = this.calcularMetricasReais(stats);
-    const dadosGraficos = this.prepararDadosGraficos(stats);
+    const dadosGraficos = await this.prepararDadosGraficos(stats);
     
     const conteudo = `
       <div class="dashboard-completo" style="padding: 24px; max-height: 100vh; overflow-y: auto; background: #f9fafb;">
@@ -547,7 +547,7 @@ window.CRMDashboard = {
   // =====================================================
   // PREPARAR DADOS PARA GRÁFICOS
   // =====================================================
-  prepararDadosGraficos: function(stats) {
+  prepararDadosGraficos: async function(stats) {
     const clientes = Object.values(window.crmState.kanbanData?.clients || {});
     const colunas = window.crmState.kanbanData?.columns || [];
     
@@ -565,8 +565,15 @@ window.CRMDashboard = {
       percentage: Math.round((count / stats.totalClients) * 100)
     }));
     
-    // Dados de evolução (últimos 30 dias)
-    const evolucao = this.calcularEvolucao30Dias(clientes);
+    // Dados de evolucao por ciclo comercial
+    const vendas = await (window.carregarTodasVendas?.() || (window.CRMCicloComercial?.getHistoricoVendas?.() || []));
+    const agrupadas = {};
+    vendas.forEach(venda => {
+      const ciclo = venda.cicloComercial ?? venda.cicloId ?? "Sem Ciclo";
+      agrupadas[ciclo] = (agrupadas[ciclo] || 0) + 1;
+    });
+    const ciclosOrdenados = Object.keys(agrupadas).sort();
+    const evolucao = { labels: ciclosOrdenados, data: ciclosOrdenados.map(c => agrupadas[c]) };
     
     return { pipeline, origens, evolucao };
   },
