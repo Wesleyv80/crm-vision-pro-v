@@ -1,0 +1,102 @@
+{
+  "manifest_version": 3,
+  "name": "CRM Vision Pro - WhatsApp Business Intelligence",
+  "version": "2.2.0",
+  "description": "Sistema CRM revolucionário com IA integrada para WhatsApp Web e Google Sheets",
+  "author": "Wesley Silva",
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "clipboardRead",
+    "clipboardWrite",
+    "notifications",
+    "unlimitedStorage",
+    "identity"
+  ],
+  "host_permissions": [
+    "https://web.whatsapp.com/*",
+    "https://sheets.googleapis.com/*",
+    "https://www.googleapis.com/*"
+  ],
+  "oauth2": {
+    "client_id": "809379581602-j415717i0ousces2o26q206sok01ck0a.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/spreadsheets",
+      "https://www.googleapis.com/auth/drive.file"
+    ]
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": [
+        "src/modules/utils.js",
+        "src/modules/storage.js",
+        "src/modules/capture.js",
+        "src/modules/ui.js",
+        "src/modules/ciclo-comercial.js",
+        "src/modules/google-sheets.js",
+        "src/modules/kanban-core.js",  
+        "src/modules/kanban-ui.js",   
+        "src/modules/analytics.js",
+        "src/modules/dashboard-new.js",
+        "src/content.js"
+      ],
+      "css": [
+        "styles/base.css",
+        "styles/sidebar.css",
+        "styles/kanban.css",
+        "styles/cards.css",
+        "styles/animations.css",
+        "styles/glassmorphism.css",
+        "styles/dashboard.css"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/icons/icon-16.png",
+        "assets/icons/icon-48.png",
+        "assets/icons/icon-128.png",
+        "assets/icons/dashboard.png",
+        "assets/icons/capture.png",
+        "assets/icons/crm.png",
+        "assets/icons/kanban.png",
+        "assets/icons/sheets.png",
+        "assets/icons/settings.png",
+        "assets/icons/rocket.png",
+        "assets/icons/moon.png",
+        "assets/icons/user-default.png",
+        "assets/icons/users.png",
+        "assets/icons/deals.png",
+        "assets/icons/revenue.png",
+        "assets/icons/conversion.png",
+        "assets/icons/refresh.png",
+        "assets/icons/report.png",
+        "assets/icons/export.png",
+        "assets/icons/import.png",
+        "assets/icons/webhook.png",
+        "styles/*",
+        "src/modules/*"
+      ],
+      "matches": ["https://web.whatsapp.com/*"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon-16.png",
+      "48": "assets/icons/icon-48.png",
+      "128": "assets/icons/icon-128.png"
+    }
+  }
+}

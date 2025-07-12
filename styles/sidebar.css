@@ -1,0 +1,655 @@
+/* =====================================================
+   SIDEBAR.CSS - Design Original com Imagens - CORRIGIDO
+   ===================================================== */
+
+/* Container da extensão ajustando o WhatsApp */
+#app {
+  transition: margin-right 0.3s ease;
+}
+
+/* Barra lateral minimalista - EXATAMENTE como criamos */
+.mini-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 64px;
+  height: 100vh;
+  background: linear-gradient(to bottom, #1e293b 0%, #0f172a 100%);
+  box-shadow: -2px 0 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.5s ease;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hover effect na sidebar inteira */
+.mini-sidebar:hover {
+  width: 256px;
+}
+
+/* ===== LUA ANIMADA NO TOPO ===== */
+.sidebar-logo {
+  position: relative;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.moon-container {
+  animation: moonGlow 4s ease-in-out infinite;
+  transition: all 0.5s ease;
+}
+
+/* Lua menor quando sidebar fechada */
+.mini-sidebar:not(:hover) .moon-container {
+  width: 48px;
+  height: 48px;
+}
+
+.mini-sidebar:hover .moon-container {
+  width: 64px;
+  height: 64px;
+}
+
+.moon-container.rocket-approaching {
+  animation: moonGlow 0.3s ease-in-out infinite;
+  filter: drop-shadow(0 0 40px rgba(255, 200, 100, 0.9)) !important;
+  transform: scale(1.2) !important;
+}
+
+.moon-surface {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #f5f5dc 0%, #e8e8d0 50%, #d3d3c0 100%);
+  overflow: hidden;
+}
+
+.moon-crater {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.1);
+  animation: moonCraters 3s ease-in-out infinite alternate;
+}
+
+.moon-icon {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.9;
+}
+
+@keyframes moonGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.8));
+    transform: scale(1.05);
+  }
+}
+
+@keyframes moonCraters {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}
+
+@keyframes moonPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
+  }
+}
+
+/* Estrelas ao redor da lua */
+.stars {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+/* ===== MENU DA SIDEBAR ===== */
+.sidebar-menu {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  overflow-y: auto;
+  overflow-x: visible !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Scrollbar customizada */
+.sidebar-menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-menu::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+/* ===== BOTÕES DA SIDEBAR - DESIGN CORRIGIDO ===== */
+.sidebar-btn {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  flex-direction: row;
+  gap: 12px;
+  padding: 12px;
+  min-height: 48px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: visible !important;
+  white-space: nowrap;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* CORREÇÃO: Estado fechado da sidebar - centraliza ícone */
+.mini-sidebar:not(:hover) .sidebar-btn {
+  justify-content: center !important;
+  padding: 12px 8px !important;
+  overflow: visible !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Estado aberto da sidebar */
+.mini-sidebar:hover .sidebar-btn {
+  justify-content: flex-start !important;
+  padding: 12px 16px !important;
+  overflow: visible !important;
+}
+
+/* Container do ícone - NOVA ESTRUTURA PARA GARANTIR VISIBILIDADE */
+.btn-icon-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+/* Ícone do botão - TAMANHOS CORRIGIDOS COM FORÇAR VISIBILIDADE */
+.btn-icon {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  object-fit: contain;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  z-index: 10;
+  border: none !important;
+  outline: none !important;
+}
+
+/* CORREÇÃO: Quando sidebar fechada, ícone maior e centralizado */
+.mini-sidebar:not(:hover) .btn-icon {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  max-width: 32px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative;
+  z-index: 10;
+}
+
+/* CORREÇÃO: Quando sidebar fechada, esconde wrapper extra */
+.mini-sidebar:not(:hover) .btn-icon-wrapper {
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Quando sidebar aberta, ícone menor para ficar proporcional */
+.mini-sidebar:hover .btn-icon {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  max-width: 24px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.mini-sidebar:hover .btn-icon-wrapper {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+}
+
+/* Label do botão */
+.btn-label {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: all 0.3s ease;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+/* CORREÇÃO: Esconde label quando sidebar fechada */
+.mini-sidebar:not(:hover) .btn-label {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+.mini-sidebar:hover .btn-label {
+  display: block !important;
+  opacity: 1 !important;
+  transform: translateX(0);
+}
+
+/* Efeito de brilho */
+.shine-effect {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.sidebar-btn:hover .shine-effect {
+  left: 100%;
+}
+
+/* Animações originais dos botões */
+@keyframes iconFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(5deg);
+  }
+}
+
+@keyframes iconPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes slideInBounce {
+  0% {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateX(3px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.sidebar-btn:hover .btn-icon {
+  animation: iconFloat 0.6s ease-in-out infinite;
+}
+
+.sidebar-btn:active .btn-icon {
+  animation: iconPulse 0.3s ease;
+}
+
+/* Barra lateral colorida no hover */
+.sidebar-btn::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0;
+  background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+  transition: height 0.3s ease;
+  border-radius: 0 3px 3px 0;
+}
+
+.sidebar-btn:hover::before {
+  height: 70%;
+}
+
+/* Estados do botão - HOVER CORRIGIDO */
+.sidebar-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  transform: translateX(-2px);
+  border-color: transparent;
+}
+
+/* Estado ativo do botão */
+.sidebar-btn.active {
+  background: linear-gradient(to right, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+  color: #fff;
+  border-color: #3b82f6;
+}
+
+.sidebar-btn.active::before {
+  height: 80%;
+  background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+}
+
+/* CORREÇÃO: Estado ativo quando sidebar fechada - mantém ícone visível */
+.mini-sidebar:not(:hover) .sidebar-btn.active .btn-icon {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
+/* ===== FOOTER DA SIDEBAR ===== */
+.sidebar-footer {
+  padding: 12px;
+}
+
+/* ===== BOTÃO DO FOGUETE - DESIGN CORRIGIDO ===== */
+.rocket-button {
+  position: relative;
+  width: 100%;
+  height: 56px;
+  background: linear-gradient(to right, #a855f7, #ec4899);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+  animation: rocketButtonFloat 2s ease-in-out infinite;
+  box-sizing: border-box;
+}
+
+/* Quando sidebar fechada */
+.mini-sidebar:not(:hover) .rocket-button {
+  height: 48px;
+  margin: 0 4px;
+}
+
+/* Quando sidebar aberta */
+.mini-sidebar:hover .rocket-button {
+  height: 56px;
+  margin: 0;
+}
+
+@keyframes rocketButtonFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes rocketButtonPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(168, 85, 247, 0);
+  }
+}
+
+.rocket-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 30px rgba(168, 85, 247, 0.5);
+  animation: rocketButtonPulse 1s ease-in-out infinite;
+}
+
+.rocket-icon {
+  object-fit: contain;
+  z-index: 10;
+  transition: all 0.3s ease;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Tamanhos do ícone do foguete */
+.mini-sidebar:not(:hover) .rocket-icon {
+  width: 32px !important;
+  height: 32px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.mini-sidebar:hover .rocket-icon {
+  width: 40px !important;
+  height: 40px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Container do foguete animado */
+.rocket-container {
+  position: fixed;
+  bottom: 20px;
+  right: 28px;
+  opacity: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.rocket-button:hover ~ .rocket-container {
+  animation: rocketLaunch 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes rocketLaunch {
+  0% {
+    bottom: 20px;
+    right: 28px;
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  10% {
+    bottom: 30px;
+    right: 28px;
+    transform: rotate(-5deg) scale(1.1);
+  }
+  30% {
+    bottom: 150px;
+    right: 32px;
+    transform: rotate(-15deg) scale(1.15);
+  }
+  60% {
+    bottom: 400px;
+    right: 40px;
+    transform: rotate(-25deg) scale(1.1);
+  }
+  90% {
+    bottom: calc(100vh - 120px);
+    right: 50px;
+    transform: rotate(-35deg) scale(0.9);
+    opacity: 0.8;
+  }
+  100% {
+    bottom: calc(100vh - 90px);
+    right: 48px;
+    transform: rotate(-30deg) scale(0.8);
+    opacity: 0;
+  }
+}
+
+.rocket-animated {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+}
+
+/* Nuvens de fumaça */
+.smoke-cloud {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(circle, rgba(200, 200, 200, 0.6) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  z-index: 9998;
+  filter: blur(3px);
+  pointer-events: none;
+}
+
+.rocket-button:hover ~ .smoke-cloud {
+  animation: smokeCloud 1.5s ease-out forwards;
+}
+
+@keyframes smokeCloud {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(0);
+  }
+  20% {
+    opacity: 0.6;
+    transform: scale(1) translateY(5px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2) translateY(40px) translateX(-10px);
+  }
+}
+
+/* ===== MODAL OVERLAY ===== */
+#crm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 9998;
+  transition: opacity 0.3s ease;
+}
+
+#crm-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+  .mini-sidebar {
+    width: 56px;
+  }
+  
+  .mini-sidebar:hover {
+    width: 220px;
+  }
+  
+  .sidebar-btn {
+    min-height: 44px;
+  }
+  
+  /* CORREÇÃO: Ícones menores em mobile quando fechado */
+  .mini-sidebar:not(:hover) .btn-icon {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+  }
+  
+  .mini-sidebar:not(:hover) .btn-icon-wrapper {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  .mini-sidebar:hover .btn-icon {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+  }
+  
+  .mini-sidebar:hover .btn-icon-wrapper {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  
+  .moon-container {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* Ajuste do foguete em mobile */
+  .mini-sidebar:not(:hover) .rocket-icon {
+    width: 28px !important;
+    height: 28px !important;
+  }
+}
+
+/* Ajuste do WhatsApp quando sidebar expande */
+.whatsapp-adjusted {
+  margin-right: 64px !important;
+  width: calc(100% - 64px) !important;
+  transition: all 0.3s ease;
+}
+
+.whatsapp-adjusted-expanded {
+  margin-right: 256px !important;
+  width: calc(100% - 256px) !important;
+}
+
+/* CORREÇÃO ADICIONAL: Força visibilidade de todos os ícones */
+.mini-sidebar .btn-icon,
+.mini-sidebar .rocket-icon,
+.mini-sidebar .moon-icon {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Garante que não haja conflitos de overflow */
+.mini-sidebar,
+.mini-sidebar * {
+  overflow: visible !important;
+}
+
+.sidebar-btn,
+.btn-icon-wrapper,
+.btn-icon {
+  overflow: visible !important;
+  max-width: none !important;
+  max-height: none !important;
+}
