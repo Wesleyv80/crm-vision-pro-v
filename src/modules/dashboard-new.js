@@ -572,9 +572,11 @@ window.CRMDashboard = {
       const ciclo = venda.cicloComercial ?? venda.cicloId ?? "Sem Ciclo";
       agrupadas[ciclo] = (agrupadas[ciclo] || 0) + 1;
     });
-    const ciclosOrdenados = Object.keys(agrupadas).sort();
-    const evolucao = { labels: ciclosOrdenados, data: ciclosOrdenados.map(c => agrupadas[c]) };
-    
+    const evolucao = Object.keys(agrupadas).sort().map(ciclo => ({
+      ciclo,
+      total: agrupadas[ciclo]
+    }));
+
     return { pipeline, origens, evolucao };
   },
   
@@ -753,6 +755,10 @@ window.CRMDashboard = {
   // RENDER GRÁFICO DE EVOLUÇÃO
   // =====================================================
   renderEvolucaoChart: function(evolucaoData) {
+    if (!Array.isArray(evolucaoData)) {
+      console.error("Dados inválidos para o gráfico de evolução:", evolucaoData);
+      return;
+    }
     const maxClientes = Math.max(...evolucaoData.map(d => d.clientes), 10);
     const maxVendas = Math.max(...evolucaoData.map(d => d.vendas), 5);
     
