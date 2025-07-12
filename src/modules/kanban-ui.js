@@ -246,50 +246,18 @@ window.CRMKanbanUI = (() => {
       vendasDisplay.textContent = `${vendasFechadas}/${meta}`;
     }
 
-    // Calcula e mostra dias restantes no ciclo comercial (27 a 26)
+    // Calcula e mostra dias restantes usando o módulo unificado de ciclo comercial
     const diasRestantesEl = document.getElementById('dias-restantes-display');
     if (diasRestantesEl) {
-      const hoje = new Date();
-      const diaAtual = hoje.getDate();
-      const mesAtual = hoje.getMonth();
-      const anoAtual = hoje.getFullYear();
-      
-      let fimCiclo;
-      
-      // Se estamos antes do dia 27, o ciclo termina no dia 26 do mês atual
-      // Se estamos no dia 27 ou depois, o ciclo termina no dia 26 do próximo mês
-      if (diaAtual < 27) {
-        fimCiclo = new Date(anoAtual, mesAtual, 26, 23, 59, 59);
-      } else {
-        fimCiclo = new Date(anoAtual, mesAtual + 1, 26, 23, 59, 59);
-      }
-      
-      // Calcula dias restantes
-      const diasRestantes = Math.ceil((fimCiclo - hoje) / (1000 * 60 * 60 * 24));
-      
-      // Determina se estamos na primeira ou segunda quinzena do ciclo
-      let diasRestantesQuinzena;
-      if (diaAtual >= 27 || diaAtual <= 11) {
-        // Primeira quinzena (27 a 11)
-        if (diaAtual >= 27) {
-          const dia11 = new Date(anoAtual, mesAtual + 1, 11, 23, 59, 59);
-          diasRestantesQuinzena = Math.ceil((dia11 - hoje) / (1000 * 60 * 60 * 24));
-        } else {
-          const dia11 = new Date(anoAtual, mesAtual, 11, 23, 59, 59);
-          diasRestantesQuinzena = Math.ceil((dia11 - hoje) / (1000 * 60 * 60 * 24));
-        }
-      } else {
-        // Segunda quinzena (12 a 26)
-        diasRestantesQuinzena = Math.ceil((fimCiclo - hoje) / (1000 * 60 * 60 * 24));
-      }
-      
-      // Mostra dias restantes na quinzena (máximo 15 dias)
-      diasRestantesEl.textContent = `${Math.min(diasRestantesQuinzena, 15)} dias`;
-      
+      const ciclo = window.CRMCicloComercial?.getCicloAtual?.() ||
+                    window.CRMCicloComercial?.calcularCicloComercial?.();
+      const diasRestantes = ciclo?.diasRestantes ?? 0;
+      diasRestantesEl.textContent = `${diasRestantes} dias restantes`;
+
       // Adiciona cores de alerta baseado nos dias restantes
-      if (diasRestantesQuinzena <= 3) {
+      if (diasRestantes <= 3) {
         diasRestantesEl.style.color = '#ef4444'; // vermelho
-      } else if (diasRestantesQuinzena <= 5) {
+      } else if (diasRestantes <= 5) {
         diasRestantesEl.style.color = '#f59e0b'; // laranja
       } else {
         diasRestantesEl.style.color = ''; // cor padrão
@@ -308,30 +276,15 @@ window.CRMKanbanUI = (() => {
       progressBar.style.width = `${progressoMeta}%`;
     }
 
-    // Atualiza período do ciclo (27 a 26)
+    // Atualiza período do ciclo (27 a 26) usando o módulo de ciclo comercial
     if (window.CRMCicloComercial || true) { // Sempre mostra o período mesmo sem o módulo
       const periodoEl = document.getElementById('periodo-ciclo-compact');
       if (periodoEl) {
-        const hoje = new Date();
-        const diaAtual = hoje.getDate();
-        const mesAtual = hoje.getMonth();
-        const anoAtual = hoje.getFullYear();
-        
-        let inicioCiclo, fimCiclo;
-        
-        // Determina início e fim do ciclo atual
-        if (diaAtual >= 27) {
-          // Estamos no ciclo que começou este mês
-          inicioCiclo = new Date(anoAtual, mesAtual, 27);
-          fimCiclo = new Date(anoAtual, mesAtual + 1, 26);
-        } else {
-          // Estamos no ciclo que começou mês passado
-          inicioCiclo = new Date(anoAtual, mesAtual - 1, 27);
-          fimCiclo = new Date(anoAtual, mesAtual, 26);
-        }
-        
-        const inicio = inicioCiclo.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
-        const fim = fimCiclo.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+        const ciclo = window.CRMCicloComercial?.getCicloAtual?.() ||
+                      window.CRMCicloComercial?.calcularCicloComercial?.();
+
+        const inicio = ciclo?.inicio?.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+        const fim = ciclo?.fim?.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
         periodoEl.textContent = `${inicio} - ${fim}`;
       }
     }
@@ -1554,23 +1507,12 @@ window.CRMKanbanUI = (() => {
       return;
     }
 
-    // Calcula ciclo correto (27 a 26)
-    const hoje = new Date();
-    const diaAtual = hoje.getDate();
-    const mesAtual = hoje.getMonth();
-    const anoAtual = hoje.getFullYear();
-    
-    let inicioCiclo, fimCiclo;
-    
-    if (diaAtual >= 27) {
-      inicioCiclo = new Date(anoAtual, mesAtual, 27);
-      fimCiclo = new Date(anoAtual, mesAtual + 1, 26);
-    } else {
-      inicioCiclo = new Date(anoAtual, mesAtual - 1, 27);
-      fimCiclo = new Date(anoAtual, mesAtual, 26);
-    }
-    
-    const diasRestantesCiclo = Math.ceil((fimCiclo - hoje) / (1000 * 60 * 60 * 24));
+    // Obtém ciclo comercial pelo módulo unificado
+    const ciclo = window.CRMCicloComercial?.getCicloAtual?.() ||
+                  window.CRMCicloComercial?.calcularCicloComercial?.();
+    const inicioCiclo = ciclo?.inicio;
+    const fimCiclo = ciclo?.fim;
+    const diasRestantesCiclo = ciclo?.diasRestantes ?? 0;
     
     const meta = window.CRMCicloComercial.getMeta();
     const metricas = window.CRMKanbanCore?.calcularMetricasKanban() || {};
